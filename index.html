@@ -5,14 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>パチ計算</title>
+    <style>
+        input {
+            width: 80px;
+        }
+    </style>
 </head>
 <body>
     <script src="./vue.js"></script>
 
     <div id="app">
-        使った金額<input type="number" v-model="inputUseKane">円（<input type="number" v-model="input1kTama">玉/1k）<br>
-        使った玉　<input type="number" v-model="inputUseTama">玉<br>
-        持ち球　　<input type="number" v-model="inputMotidama">玉<br>
+        使った金額　<input type="number" v-model="inputUseKane">円（<input type="number" v-model="input1kTama">玉/1k）<br>
+        使った玉　　<input type="number" v-model="inputUseTama">玉<br>
+        現在持ち球　<input type="number" v-model="inputMotidama">玉<br>
         <br>
         --当たり情報入力--<br>
         回転数<input type="number" v-model="inputKaiten"><br>
@@ -32,7 +37,9 @@
                 <td><input type="button" value="削除" v-on:click="deleteRow(item.id)"></td>
             </tr>
         </table>
-        回転率：{{ kaitenritu }}/1k
+        総回転数：{{ totalKaiten }}回転<br>
+        総使用玉：{{ totalUseTama }}玉<br>
+        回転率　：{{ kaitenritu }}/1k<br>
     </div>
 
     <script>
@@ -70,18 +77,25 @@
             },
             computed:{
                 kaitenritu(){
-
+                    return (this.totalKaiten / (this.totalUseTama * 4 / 1000)).toFixed(2);
+                },
+                totalKaiten(){
                     let totalKaiten = 0;
-                    let totalDedama = 0;
                     this.list.forEach((item)=>{
                         totalKaiten += Number(item.kaiten);
+                    });
+                    return totalKaiten;
+                },
+                totalDedama(){
+                    let totalDedama = 0;
+                    this.list.forEach((item)=>{
                         totalDedama += Number(item.dedama);
                     });
-
-                    totalUseTama = totalDedama - this.inputMotidama + this.inputUseTama + (this.inputUseKane * this.input1kTama / 1000);
-
-                    return (totalKaiten / (totalUseTama * 4 / 1000)).toFixed(2);
-                }
+                    return totalDedama;
+                },
+                totalUseTama(){
+                    return this.totalDedama - this.inputMotidama + this.inputUseTama + (this.inputUseKane * this.input1kTama / 1000);
+                },
             }
         });
     </script>
