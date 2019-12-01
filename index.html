@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>パチ計算</title>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <div id="app">
+        使った金額<input type="number" v-model="inputUseKane">円（<input type="number" v-model="input1kTama">玉/1k）<br>
+        使った玉　<input type="number" v-model="inputUseTama">玉<br>
+        持ち球　　<input type="number" v-model="inputMotidama">玉<br>
+        <br>
+        --当たり情報入力--<br>
+        回転数<input type="number" v-model="inputKaiten"><br>
+        出玉　<input type="number" v-model="inputDedata"><br>
+        <input type="button" value="追加" v-on:click="add()"/>
+        <br>
+        <br>
+        <table border="1">
+            <tr>
+                <th>回転数</th>
+                <th>出玉</th>
+                <th>削除</th>
+            </tr>
+            <tr v-for="item in list">
+                <td>{{ item.kaiten }}</td>
+                <td>{{ item.dedama }}</td>
+                <td><input type="button" value="削除" v-on:click="deleteRow(item.id)"></td>
+            </tr>
+        </table>
+        回転率：{{ kaitenritu }}/1k
+    </div>
+
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data: {
+                inputKaiten:0,
+                inputDedata:0,
+
+                inputUseKane:0,
+                input1kTama:250,
+                inputUseTama:0,
+                inputMotidama:0,
+
+                idCount:0,
+                list: [],
+            },
+            methods:{
+                add(){
+                    let data = {
+                        id : this.idCount++,
+                        kaiten:this.inputKaiten,
+                        dedama:this.inputDedata,
+                    };
+                    this.list.push(data);
+
+                    this.inputKaiten = 0;
+                    this.inputDedata = 0;
+                },
+                deleteRow(id){
+                    this.list = this.list.filter((row) => {
+                        return row.id !== id;
+                    });
+                }
+            },
+            computed:{
+                kaitenritu(){
+
+                    let totalKaiten = 0;
+                    let totalDedama = 0;
+                    this.list.forEach((item)=>{
+                        totalKaiten += Number(item.kaiten);
+                        totalDedama += Number(item.dedama);
+                    });
+
+                    totalUseTama = totalDedama - this.inputMotidama + this.inputUseTama + (this.inputUseKane * this.input1kTama / 1000);
+
+                    return (totalKaiten / (totalUseTama * 4 / 1000)).toFixed(2);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
