@@ -94,7 +94,7 @@
                     return totalDedama;
                 },
                 totalUseTama(){
-                    return this.totalDedama - this.inputMotidama + this.inputUseTama + (this.inputUseKane * this.input1kTama / 1000);
+                    return this.totalDedama - Number(this.inputMotidama) + Number(this.inputUseTama) + (Number(this.inputUseKane) * Number(this.input1kTama) / 1000);
                 },
             }
         });
