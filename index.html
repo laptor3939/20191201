@@ -86,7 +86,7 @@
                     localStorage.inputUseTama = this.inputUseTama;
                     localStorage.inputMotidama = this.inputMotidama;
                     localStorage.idCount = this.idCount;
-                    localStorage.list = JSON.stringify(this.list);
+                    localStorage.setItem('list', JSON.stringify(this.list));
                 },
                 restoreLocalstrage(){
                     if (localStorage.list) {
@@ -95,7 +95,7 @@
                         this.inputUseTama = localStorage.inputUseTama;
                         this.inputMotidama = localStorage.inputMotidama;
                         this.idCount = localStorage.idCount;
-                        this.list = JSON.parse(localStorage.list);
+                        this.list = JSON.parse(localStorage.getItem('list'));
                         // localStorage.removeItem('cats');
                     }
                 },
