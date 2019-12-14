@@ -15,6 +15,7 @@
     <script src="./vue.js"></script>
 
     <div id="app">
+        ver1.01<br>
         使った金額　<input type="number" v-model="inputUseKane">円（<input type="number" v-model="input1kTama">玉/1k）<br>
         使った玉　　<input type="number" v-model="inputUseTama">玉<br>
         現在持ち球　<input type="number" v-model="inputMotidama">玉<br>
@@ -37,6 +38,7 @@
                 <td><input type="button" value="削除" v-on:click="deleteRow(item.id)"></td>
             </tr>
         </table>
+        総出玉　：{{ totalDedama }}玉<br>
         総回転数：{{ totalKaiten }}回転<br>
         総使用玉：{{ totalUseTama }}玉<br>
         回転率　：{{ kaitenritu }}/1k<br>
@@ -57,6 +59,17 @@
                 idCount:0,
                 list: [],
             },
+            mounted() {
+                if (localStorage.list) {
+                    this.inputUseKane = localStorage.inputUseKane;
+                    this.input1kTama = localStorage.input1kTama;
+                    this.inputUseTama = localStorage.inputUseTama;
+                    this.inputMotidama = localStorage.inputMotidama;
+                    this.idCount = localStorage.idCount;
+                    this.list = localStorage.list;
+                    // localStorage.removeItem('cats');
+                }
+            },
             methods:{
                 add(){
                     let data = {
@@ -68,11 +81,23 @@
 
                     this.inputKaiten = 0;
                     this.inputDedata = 0;
+
+                    this.setLocalstrage();
                 },
                 deleteRow(id){
                     this.list = this.list.filter((row) => {
                         return row.id !== id;
                     });
+
+                    this.setLocalstrage();
+                },
+                setLocalstrage(){
+                    localStorage.inputUseKane = this.inputUseKane;
+                    localStorage.input1kTama = this.input1kTama;
+                    localStorage.inputUseTama = this.inputUseTama;
+                    localStorage.inputMotidama = this.inputMotidama;
+                    localStorage.idCount = this.idCount;
+                    localStorage.list = this.list;
                 }
             },
             computed:{
