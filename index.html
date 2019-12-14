@@ -21,8 +21,9 @@
         現在持ち球　<input type="number" v-model="inputMotidama">玉<br>
         <br>
         --当たり情報入力--<br>
-        回転数<input type="number" v-model="inputKaiten"><br>
-        出玉　<input type="number" v-model="inputDedata"><br>
+        回転数　<input type="number" v-model="inputKaiten"><br>
+        出玉　　<input type="number" v-model="inputDedata"><br>
+        ラウンド<input type="number" v-model="inputRound"><br>
         <input type="button" value="追加" v-on:click="add()"/>
         <br>
         <br>
@@ -30,18 +31,22 @@
             <tr>
                 <th>回転数</th>
                 <th>出玉</th>
+                <th>ラウンド</th>
                 <th>削除</th>
             </tr>
             <tr v-for="item in list">
                 <td>{{ item.kaiten }}</td>
                 <td>{{ item.dedama }}</td>
+                <td>{{ item.round }}</td>
                 <td><input type="button" value="削除" v-on:click="deleteRow(item.id)"></td>
             </tr>
         </table>
-        総出玉　：{{ totalDedama }}玉<br>
-        総回転数：{{ totalKaiten }}回転<br>
-        総使用玉：{{ totalUseTama }}玉<br>
-        回転率　：{{ kaitenritu }}/1k<br>
+        トータル回転数　：{{ totalKaiten }}回転<br>
+        トータル出玉　　：{{ totalDedama }}玉<br>
+        トータルラウンド：{{ totalRound }}R<br>
+        <br>
+        トータル使用玉　：{{ totalUseTama }}玉<br>
+        回転率　　　　　：{{ kaitenritu }}/1k<br>
     </div>
 
     <script>
@@ -50,6 +55,7 @@
             data: {
                 inputKaiten:0,
                 inputDedata:0,
+                inputRound:0,
 
                 inputUseKane:0,
                 input1kTama:250,
@@ -65,11 +71,13 @@
                         id : this.idCount++,
                         kaiten:this.inputKaiten,
                         dedama:this.inputDedata,
+                        round:this.inputRound,
                     };
                     this.list.push(data);
 
                     this.inputKaiten = 0;
                     this.inputDedata = 0;
+                    this.inputRound = 0;
 
                     this.setLocalstrage();
                 },
@@ -117,6 +125,13 @@
                         totalDedama += Number(item.dedama);
                     });
                     return totalDedama;
+                },
+                totalRound(){
+                    let totalRound = 0;
+                    this.list.forEach((item)=>{
+                        totalRound += Number(item.round);
+                    });
+                    return totalRound;
                 },
                 totalUseTama(){
                     return this.totalDedama - Number(this.inputMotidama) + Number(this.inputUseTama) + (Number(this.inputUseKane) * Number(this.input1kTama) / 1000);
