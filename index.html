@@ -15,7 +15,7 @@
     <script src="./vue.js"></script>
 
     <div id="app">
-        ver1.01<br>
+        ver1.01<input type="button" value="復元" v-on:click="restoreLocalstrage()"/><br>
         使った金額　<input type="number" v-model="inputUseKane">円（<input type="number" v-model="input1kTama">玉/1k）<br>
         使った玉　　<input type="number" v-model="inputUseTama">玉<br>
         現在持ち球　<input type="number" v-model="inputMotidama">玉<br>
@@ -59,18 +59,6 @@
                 idCount:0,
                 list: [],
             },
-            mounted() {
-                console.log('mounted');
-                if (localStorage.list) {
-                    this.inputUseKane = localStorage.inputUseKane;
-                    this.input1kTama = localStorage.input1kTama;
-                    this.inputUseTama = localStorage.inputUseTama;
-                    this.inputMotidama = localStorage.inputMotidama;
-                    this.idCount = localStorage.idCount;
-                    this.list = localStorage.list;
-                    // localStorage.removeItem('cats');
-                }
-            },
             methods:{
                 add(){
                     let data = {
@@ -99,7 +87,18 @@
                     localStorage.inputMotidama = this.inputMotidama;
                     localStorage.idCount = this.idCount;
                     localStorage.list = this.list;
-                }
+                },
+                restoreLocalstrage(){
+                    if (localStorage.list) {
+                        this.inputUseKane = localStorage.inputUseKane;
+                        this.input1kTama = localStorage.input1kTama;
+                        this.inputUseTama = localStorage.inputUseTama;
+                        this.inputMotidama = localStorage.inputMotidama;
+                        this.idCount = localStorage.idCount;
+                        this.list = localStorage.list;
+                        // localStorage.removeItem('cats');
+                    }
+                },
             },
             computed:{
                 kaitenritu(){
