@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>パチ計算</title>
+    <style>
+        input {
+            width: 80px;
+        }
+    </style>
+</head>
+<body>
+    <script src="./vue.js"></script>
+
+    <div id="app">
+        ver1.02<input type="button" value="復元" v-on:click="restoreLocalstrage()"/><br>
+        使った金額　<input type="number" v-model="inputUseKane">円（<input type="number" v-model="input1kTama">玉/1k）<br>
+        使った玉　　<input type="number" v-model="inputUseTama">玉<br>
+        現在持ち球　<input type="number" v-model="inputMotidama">玉<br>
+        <br>
+        --当たり情報入力--<br>
+        回転数　<input type="number" v-model="inputKaiten"><br>
+        出玉　　<input type="number" v-model="inputDedata"><br>
+        ラウンド<input type="number" v-model="inputRound"><br>
+        <input type="button" value="追加" v-on:click="add()"/>
+        <br>
+        <br>
+        <table border="1">
+            <tr>
+                <th>回転数</th>
+                <th>出玉</th>
+                <th>ラウンド</th>
+                <th>削除</th>
+            </tr>
+            <tr v-for="item in list">
+                <td>{{ item.kaiten }}</td>
+                <td>{{ item.dedama }}</td>
+                <td>{{ item.round }}</td>
+                <td><input type="button" value="削除" v-on:click="deleteRow(item.id)"></td>
+            </tr>
+        </table>
+        トータル回転数　：{{ totalKaiten }}回転<br>
+        トータル出玉　　：{{ totalDedama }}玉<br>
+        トータルラウンド：{{ totalRound }}R<br>
+        <br>
+        トータル使用玉　：{{ totalUseTama }}玉<br>
+        回転率　　　　　：{{ kaitenritu }}/1k<br>
+        出玉/ラウンド　 ：{{ dedamaPerRound }}<br>
+    </div>
+
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data: {
+                inputKaiten:0,
+                inputDedata:0,
+                inputRound:0,
+
+                inputUseKane:0,
+                input1kTama:250,
+                inputUseTama:0,
+                inputMotidama:0,
+
+                idCount:0,
+                list: [],
+            },
+            methods:{
+                add(){
+                    let data = {
+                        id : this.idCount++,
+                        kaiten:this.inputKaiten,
+                        dedama:this.inputDedata,
+                        round:this.inputRound,
+                    };
+                    this.list.push(data);
+
+                    this.inputKaiten = 0;
+                    this.inputDedata = 0;
+                    this.inputRound = 0;
+
+                    this.setLocalstrage();
+                },
+                deleteRow(id){
+                    this.list = this.list.filter((row) => {
+                        return row.id !== id;
+                    });
+
+                    this.setLocalstrage();
+                },
+                setLocalstrage(){
+                    localStorage.inputUseKane = this.inputUseKane;
+                    localStorage.input1kTama = this.input1kTama;
+                    localStorage.inputUseTama = this.inputUseTama;
+                    localStorage.inputMotidama = this.inputMotidama;
+                    localStorage.idCount = this.idCount;
+                    localStorage.setItem('list', JSON.stringify(this.list));
+                },
+                restoreLocalstrage(){
+                    if (localStorage.list) {
+                        this.inputUseKane = localStorage.inputUseKane;
+                        this.input1kTama = localStorage.input1kTama;
+                        this.inputUseTama = localStorage.inputUseTama;
+                        this.inputMotidama = localStorage.inputMotidama;
+                        this.idCount = localStorage.idCount;
+                        this.list = JSON.parse(localStorage.getItem('list'));
+                        // localStorage.removeItem('cats');
+                    }
+                },
+            },
+            computed:{
+                kaitenritu(){
+                    return (this.totalKaiten / (this.totalUseTama * 4 / 1000)).toFixed(2);
+                },
+                dedamaPerRound(){
+                    return (this.totalDedama / this.totalRound).toFixed(2);
+                },
+                totalKaiten(){
+                    let totalKaiten = 0;
+                    this.list.forEach((item)=>{
+                        totalKaiten += Number(item.kaiten);
+                    });
+                    return totalKaiten;
+                },
+                totalDedama(){
+                    let totalDedama = 0;
+                    this.list.forEach((item)=>{
+                        totalDedama += Number(item.dedama);
+                    });
+                    return totalDedama;
+                },
+                totalRound(){
+                    let totalRound = 0;
+                    this.list.forEach((item)=>{
+                        totalRound += Number(item.round);
+                    });
+                    return totalRound;
+                },
+                totalUseTama(){
+                    return this.totalDedama - Number(this.inputMotidama) + Number(this.inputUseTama) + (Number(this.inputUseKane) * Number(this.input1kTama) / 1000);
+                },
+            }
+        });
+    </script>
+</body>
+</html>
