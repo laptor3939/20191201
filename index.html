@@ -47,6 +47,7 @@
         <br>
         トータル使用玉　：{{ totalUseTama }}玉<br>
         回転率　　　　　：{{ kaitenritu }}/1k<br>
+        出玉/ラウンド　 ：{{ dedamaPerRound }}<br>
     </div>
 
     <script>
@@ -111,6 +112,9 @@
             computed:{
                 kaitenritu(){
                     return (this.totalKaiten / (this.totalUseTama * 4 / 1000)).toFixed(2);
+                },
+                dedamaPerRound(){
+                    return (this.totalDedama / this.totalRound).toFixed(2);
                 },
                 totalKaiten(){
                     let totalKaiten = 0;
